@@ -29,19 +29,25 @@ def sma(x, **kwargs):
 
     period = kwargs.get("period", default_period)
     sma_string = "Sma_"+str(period)
+
     try:
         if(x.shape[1] > 1 ):
             _inputcol = kwargs.get("inputcol", "Adj Close")
             _x = x.loc[:, _inputcol]
 
             _outputcol = kwargs.get("outputcol", sma_string)
-            ma[_outputcol] = _x.rolling(window=period).mean()
-            ma = ma.iloc[period: , :]
+            ma[_outputcol] = _x.rolling(window=period).mean().dropna(axis="index")
+
             return ma 
+        else:
+            _outputcol = kwargs.get("outputcol", sma_string)
+            ma[_outputcol] = x.rolling(window=period).mean().dropna(axis="index")
+
+            return ma
     except IndexError:
         _outputcol = kwargs.get("outputcol", sma_string)
-        ma[_outputcol] = x.rolling(window=period).mean()
-        ma = ma.iloc[period: , :]
+        ma[_outputcol] = x.rolling(window=period).mean().dropna(axis="index")
+
         return ma
 
 
@@ -74,13 +80,18 @@ def ema(x, **kwargs):
             _x = x.loc[:, _inputcol]
 
             _outputcol = kwargs.get("outputcol", ema_string)
-            ma[_outputcol] = _x.ewm(span=_span, adjust=True).mean()
-            ma = ma.iloc[_span: , :]
+            ma[_outputcol] = _x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
+
+            return ma
+        else:
+            _outputcol = kwargs.get("outputcol", ema_string)
+            ma[_outputcol] = x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
+
             return ma
     except IndexError:
         _outputcol = kwargs.get("outputcol", ema_string)
-        ma[_outputcol] = x.ewm(span=_span, adjust=True).mean()
-        ma = ma.iloc[_span: , :]
+        ma[_outputcol] = x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
+
         return ma
 
 def macd(x, **kwargs):
@@ -108,21 +119,28 @@ def macd(x, **kwargs):
 
             _outputcol = kwargs.get("outputcol", "MACD")
             
-            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"])
-            macd["Signal Line"] = ema(macd, span=9)
-            macd = macd.iloc[26: , :]
+            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
+            macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
 
             return macd
+        else:
+            _outputcol = kwargs.get("outputcol", "MACD")
 
+            _12periodema = ema(x, span=12)
+            _26periodema = ema(x, span=26)
+
+            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
+            macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
+
+            return macd
     except:
         _outputcol = kwargs.get("outputcol", "MACD")
 
         _12periodema = ema(x, span=12)
         _26periodema = ema(x, span=26)
 
-        macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"])
-        macd = macd.iloc[26: , :]
-        macd["Signal Line"] = ema(macd, span=9)
+        macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
+        macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
 
         return macd
    
@@ -131,9 +149,10 @@ def macd(x, **kwargs):
 
 
 
-AAPL = data.history("AAPL", start="2020-01-01")
+AAPL = data.history("AAPL", start="2022-08-01")
 AAPL_close = AAPL["Adj Close"]
 AAPL_macd = macd(AAPL)
 print(AAPL_macd)
-plt.plot(AAPL_close)
+
+plt.plot(AAPL_macd)
 plt.show()
