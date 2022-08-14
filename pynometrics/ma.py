@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 import data
 
@@ -28,18 +29,16 @@ def sma(x, **kwargs):
 
     period = kwargs.get("period", default_period)
     sma_string = "Sma_"+str(period)
+    try:
+        if(x.shape[1] > 1 ):
+            _inputcol = kwargs.get("inputcol", "Adj Close")
+            _x = x.loc[:, _inputcol]
 
-    if(x.shape[1] > 1):
-        _inputcol = kwargs.get("inputcol", "Adj Close")
-        _x = x.loc[:, _inputcol]
-
-        _outputcol = kwargs.get("outputcol", sma_string)
-        ma[_outputcol] = _x.rolling(window=period).mean()
-        ma = ma.iloc[period: , :]
-        return ma
-    elif(x.shape[1] < 1 ):
-        raise Exception("Number of columns cannot be less than 1")
-    else:
+            _outputcol = kwargs.get("outputcol", sma_string)
+            ma[_outputcol] = _x.rolling(window=period).mean()
+            ma = ma.iloc[period: , :]
+            return ma 
+    except IndexError:
         _outputcol = kwargs.get("outputcol", sma_string)
         ma[_outputcol] = x.rolling(window=period).mean()
         ma = ma.iloc[period: , :]
@@ -69,22 +68,20 @@ def ema(x, **kwargs):
     _span = kwargs.get("span", default_span)
     ema_string = "Ema_"+str(_span)
 
-    if(x.shape[1] > 1):
-        _inputcol = kwargs.get("inputcol", "Adj Close")
-        _x = x.loc[:, _inputcol]
+    try: 
+        if(x.shape[1] > 1):
+            _inputcol = kwargs.get("inputcol", "Adj Close")
+            _x = x.loc[:, _inputcol]
 
-        _outputcol = kwargs.get("outputcol", ema_string)
-        ma[_outputcol] = _x.ewm(span=_span, adjust=True).mean()
-        ma = ma.iloc[_span: , :]
-        return ma
-    elif(x.shape[1] < 1 ):
-        raise Exception("Number of columns cannot be less than 1")
-    else:
+            _outputcol = kwargs.get("outputcol", ema_string)
+            ma[_outputcol] = _x.ewm(span=_span, adjust=True).mean()
+            ma = ma.iloc[_span: , :]
+            return ma
+    except IndexError:
         _outputcol = kwargs.get("outputcol", ema_string)
         ma[_outputcol] = x.ewm(span=_span, adjust=True).mean()
         ma = ma.iloc[_span: , :]
         return ma
-
 
 def macd(x, **kwargs):
 
@@ -101,23 +98,23 @@ def macd(x, **kwargs):
     
     macd = pd.DataFrame()
 
-    if(x.shape[1] > 1):
+    try:
+        if(x.shape[1] > 1):
 
-        _inputcol = kwargs.get("inputcol", "Adj Close")
+            _inputcol = kwargs.get("inputcol", "Adj Close")
 
-        _12periodema = ema(x, span=12, inputcol = _inputcol)
-        _26periodema = ema(x, span=26, inputcol = _inputcol)
+            _12periodema = ema(x, span=12, inputcol = _inputcol)
+            _26periodema = ema(x, span=26, inputcol = _inputcol)
 
-        _outputcol = kwargs.get("outputcol", "MACD")
-        
-        macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"])
-        macd["Signal Line"] = ema(macd, span=9)
-        macd = macd.iloc[26: , :]
+            _outputcol = kwargs.get("outputcol", "MACD")
+            
+            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"])
+            macd["Signal Line"] = ema(macd, span=9)
+            macd = macd.iloc[26: , :]
 
-        return macd
-    elif(x.shape[1] < 1 ):
-        raise Exception("Number of columns cannot be less than 1")
-    else:
+            return macd
+
+    except:
         _outputcol = kwargs.get("outputcol", "MACD")
 
         _12periodema = ema(x, span=12)
@@ -128,7 +125,15 @@ def macd(x, **kwargs):
         macd["Signal Line"] = ema(macd, span=9)
 
         return macd
+   
 
 #def bollinger(x, **kwargs):
-    
-x = np.array()
+
+
+
+AAPL = data.history("AAPL", start="2020-01-01")
+AAPL_close = AAPL["Adj Close"]
+AAPL_macd = macd(AAPL)
+print(AAPL_macd)
+plt.plot(AAPL_close)
+plt.show()
