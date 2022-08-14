@@ -64,9 +64,9 @@ class LinearRegression:
     def predict(self, x):
         self.w = 0
         try:
-            for i in range(len(self.m)):
-                self.w = self.w + self.m[i]*x[:,i]               # range(len()) bad syntax but only way I can think of                                
-            self.w = self.w + self.c                    # to grab index so that can be used for both m and x
+            for i, c in enumerate(self.m):
+                self.w = self.w + c*x[:,i]                                        
+            self.w = self.w + self.c                   
             self.w = self.w.reshape(self.w.shape[0],1)
             return self.w  
         except:
