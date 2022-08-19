@@ -39,7 +39,7 @@ def sma(x, **kwargs):
             raise IndexError("Number of columns must be greater than 1!")
         elif(x.shape[1] > 1):
             _inputcol = kwargs.get("inputcol", "Adj Close")
-            _x = x.loc[:, _inputcol]
+            _x = x[[_inputcol]]
 
             _outputcol = kwargs.get("outputcol", sma_string)
             ma[_outputcol] = _x.rolling(window=period).mean().dropna(axis="index")
@@ -84,7 +84,7 @@ def ema(x, **kwargs):
             raise IndexError("Number of columns must be greater than 1!")
         elif(x.shape[1] > 1):
             _inputcol = kwargs.get("inputcol", "Adj Close")
-            _x = x.loc[:, _inputcol]
+            _x = x[[_inputcol]]
 
             _outputcol = kwargs.get("outputcol", ema_string)
             ma[_outputcol] = _x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
@@ -146,4 +146,37 @@ def macd(x, **kwargs):
         raise TypeError("Input must be a dataframe!")
    
 
-#def bollinger(x, **kwargs):
+def bollinger(x, **kwargs):
+
+    boll = pd.DataFrame()
+
+    _period = kwargs.get("period", 20)
+
+    is_df = isinstance(x, pd.DataFrame)
+
+    if(is_df):
+        if(x.shape[1] < 1):
+            raise IndexError("Number of columns must be greater than 1!")
+        elif(x.shape[1] > 1):
+            _inputcol = kwargs.get("inputcol", "Adj Close")
+            _x = x[[_inputcol]]
+
+            std = _x.rolling(window=_period).std().dropna(axis="index")
+
+            simplema = _x.rolling(window=_period).mean().dropna(axis="index")
+
+            boll["Upper Band"] = simplema + std*2
+            boll["Lower Band"] = simplema - std*2 
+
+            return boll
+        else:
+            std = x.rolling(window=_period).std().dropna(axis="index")
+
+            simplema = x.rolling(window=_period).mean().dropna(axis="index")
+
+            boll["Upper Band"] = simplema.add(std*2)
+            boll["Lower Band"] = simplema.subtract(std*2)
+
+            return boll
+    else:
+        return ValueError("Input must be a dataframe!")
