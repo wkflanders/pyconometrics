@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 
 import data
 
+
 default_period = 50
 default_span = 50
+
 
 def sma(x, **kwargs):
 
@@ -30,8 +32,12 @@ def sma(x, **kwargs):
     period = kwargs.get("period", default_period)
     sma_string = "Sma_"+str(period)
 
-    try:
-        if(x.shape[1] > 1 ):
+    is_df = isinstance(x, pd.DataFrame)
+
+    if(is_df):
+        if(x.shape[1] < 1):
+            raise IndexError("Number of columns must be greater than 1!")
+        elif(x.shape[1] > 1):
             _inputcol = kwargs.get("inputcol", "Adj Close")
             _x = x.loc[:, _inputcol]
 
@@ -44,12 +50,9 @@ def sma(x, **kwargs):
             ma[_outputcol] = x.rolling(window=period).mean().dropna(axis="index")
 
             return ma
-    except IndexError:
-        _outputcol = kwargs.get("outputcol", sma_string)
-        ma[_outputcol] = x.rolling(window=period).mean().dropna(axis="index")
-
-        return ma
-
+    else:
+        raise TypeError("Input must be a dataframe!")
+    
 
 def ema(x, **kwargs):
 
@@ -74,8 +77,12 @@ def ema(x, **kwargs):
     _span = kwargs.get("span", default_span)
     ema_string = "Ema_"+str(_span)
 
-    try: 
-        if(x.shape[1] > 1):
+    is_df = isinstance(x, pd.DataFrame)
+
+    if(is_df):
+        if(x.shape[1] < 1):
+            raise IndexError("Number of columns must be greater than 1!")
+        elif(x.shape[1] > 1):
             _inputcol = kwargs.get("inputcol", "Adj Close")
             _x = x.loc[:, _inputcol]
 
@@ -88,11 +95,9 @@ def ema(x, **kwargs):
             ma[_outputcol] = x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
 
             return ma
-    except IndexError:
-        _outputcol = kwargs.get("outputcol", ema_string)
-        ma[_outputcol] = x.ewm(span=_span, adjust=True).mean().dropna(axis="index")
-
-        return ma
+    else:
+        raise TypeError("Input must be a dataframe!")
+    
 
 def macd(x, **kwargs):
 
@@ -109,8 +114,12 @@ def macd(x, **kwargs):
     
     macd = pd.DataFrame()
 
-    try:
-        if(x.shape[1] > 1):
+    is_df = isinstance(x, pd.DataFrame)
+
+    if(is_df):
+        if(x.shape[1] < 1):
+            raise IndexError("Number of columns must be greater than 1!")
+        elif(x.shape[1] > 1):
 
             _inputcol = kwargs.get("inputcol", "Adj Close")
 
@@ -133,26 +142,8 @@ def macd(x, **kwargs):
             macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
 
             return macd
-    except:
-        _outputcol = kwargs.get("outputcol", "MACD")
-
-        _12periodema = ema(x, span=12)
-        _26periodema = ema(x, span=26)
-
-        macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
-        macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
-
-        return macd
+    else:
+        raise TypeError("Input must be a dataframe!")
    
 
 #def bollinger(x, **kwargs):
-
-
-
-AAPL = data.history("AAPL", start="2022-08-01")
-AAPL_close = AAPL["Adj Close"]
-AAPL_macd = macd(AAPL)
-print(AAPL_macd)
-
-plt.plot(AAPL_macd)
-plt.show()
