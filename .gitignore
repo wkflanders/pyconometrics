@@ -1,0 +1,15 @@
+__pycache__/
+
+#Log and build files
+*.log
+dist/
+
+#Virtual Environment
+venv/
+
+#Test files
+tests/
+
+
+
+
