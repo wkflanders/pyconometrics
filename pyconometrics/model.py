@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
-import data
 
 class LinearRegression:
 
@@ -86,24 +84,4 @@ class ModelError(Exception):
     pass
 
 
-
-x = np.array([0,1,2,3,4,5])
-y = np.array([2,3,4,5,6,7])
-z = np.array([0,0,1,2,4,1])
-b = np.array([1,2])
-
-x = x.reshape(x.shape[0], 1)
-y = y.reshape(y.shape[0], 1)
-z = z.reshape(z.shape[0], 1)
-regressor = LinearRegression(x, y)
-regressor.fit()
-y1 = regressor.predict(z)
-err = regressor.error(y)
-#print(regressor.m, regressor.c)
-print(y1)
-print(err)
-
-plt.plot(z, y, '.')
-plt.plot(z, y1, 'r-')
-plt.show()
 

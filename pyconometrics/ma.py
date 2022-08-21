@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-import data
-
 
 default_period = 50
 default_span = 50

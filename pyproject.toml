@@ -1,14 +1,14 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
-name = "pynometrics"
-version = "0.0.1"
+name = "pyconometrics"
+version = "0.0.5"
 authors = [
-  { name="William Flanders", email="wflanders@haverford.edu" },
+  { name="wkflanders", email="wflanders@haverford.edu" },
 ]
-description = "A small package for finance/econometrics"
+description = "A small package for econometrics and finance."
 readme = "README.md"
 license = { file="LICENSE" }
 requires-python = ">=3.7"
@@ -17,6 +17,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    'numpy>=1.23.0',
+    'pandas>=1.4.3',
+    'pandas_datareader>=0.10.0',
+]
 
 [project.urls]
-"Homepage" = "https://github.com/wkflanders/pynometrics.git"
+"Homepage" = "https://github.com/wkflanders/pynometrics"
+"Bug Tracker" = "https://github.com/wkflanders/pynometrics/issues"

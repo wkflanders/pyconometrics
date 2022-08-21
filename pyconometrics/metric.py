@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import data
 
 default_period = 50
 
@@ -81,7 +80,3 @@ def growth(x, **kwargs):
         v = v.iloc[period: , :]
 
         return v
-
-AAPL = data.history("AAPL")
-AAPL_vol = volatility(AAPL, period=365)
-print(AAPL_vol)
