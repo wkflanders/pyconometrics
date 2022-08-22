@@ -18,7 +18,7 @@ import pyconometrics as pn
 
 The library contains various tools for data retrieval, anaylsis, and prediction.
 
-# Data:
+### Data:
 The data module focuses on data collection and manipulation.
 ```
 pn.data.history()     #Retrieves the Open, Close, Volume, Adj Open, and Adj Close for a security
@@ -26,7 +26,7 @@ pn.data.center()      #Centers the data around the mean
 pn.data.normalize()   #Normalizes the data
 ```
 
-# Moving Average:
+### Moving Average:
 The moving average (ma) module focuses on creating moving averages
 ```
 pn.ma.sma()       #Creates a simple moving average across a period
@@ -35,14 +35,14 @@ pn.ma.macd()      #Creates the MACD line
 pn.ma.bollinger() #Creates bollinger bands
 ```
 
-# Metric:
+### Metric:
 The metric module contains tools to help with data anylsis
 ```
 pn.metric.volatility()    #Returns the historical volatility across a period
 pn.metric.growth()        #Returns the growth over a period and n number of steps
 ```
 
-# Model:
+### Model:
 The model module contains tools for creating models to help forecast and examine correlation
 ```
 reg = pn.model.LinearRegression()   #The linear regression class contains methods for analysis of the linear fit between a set of observations and features.
