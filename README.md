@@ -21,7 +21,7 @@ The library contains various tools for data retrieval, anaylsis, and prediction.
 ### Data:
 The data module focuses on data collection and manipulation.
 ```
-pn.data.history()     #Retrieves the Open, Close, Volume, Adj Open, and Adj Close for a security
+pn.data.history()     #Retrieves the High, Low, Open, Close, Volume, Adj Close for a security
 pn.data.center()      #Centers the data around the mean
 pn.data.normalize()   #Normalizes the data
 ```
@@ -39,7 +39,6 @@ pn.ma.bollinger() #Creates bollinger bands
 The metric module contains tools to help with data anylsis.
 ```
 pn.metric.volatility()    #Returns the historical volatility across a period
-pn.metric.growth()        #Returns the growth over a period and n number of steps
 ```
 
 ### Model:
