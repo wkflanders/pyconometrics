@@ -4,6 +4,7 @@ A small and simple Python library equipped with tools for finance and econometri
 
 ## Installation
 
+The library requires pandas, pandas datareader, and numpy.
 To install the library using pip:
 ```
 pip install pyconometrics
