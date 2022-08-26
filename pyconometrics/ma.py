@@ -103,8 +103,6 @@ def macd(x, **kwargs):
     # x: Dataframe
     # inputcol (str): Column from x that is being used to calculate the MACD
     #                 Defaults to "Adj Close"
-    # outputcol (str): Column where the MACD is being returned to
-    #                 Defaults to "MACD"
 
     # Example: 
     # SP500MACD = macd(SP500)
@@ -122,20 +120,16 @@ def macd(x, **kwargs):
 
             _12periodema = ema(x, span=12, inputcol = _inputcol)
             _26periodema = ema(x, span=26, inputcol = _inputcol)
-
-            _outputcol = kwargs.get("outputcol", "MACD")
             
-            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
+            macd["MACD"] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
             macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
 
             return macd
         else:
-            _outputcol = kwargs.get("outputcol", "MACD")
-
             _12periodema = ema(x, span=12)
             _26periodema = ema(x, span=26)
 
-            macd[_outputcol] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
+            macd["MACD"] = _12periodema["Ema_12"].subtract(_26periodema["Ema_26"]).dropna(axis="index")
             macd["Signal Line"] = ema(macd, span=9).dropna(axis="index")
 
             return macd
@@ -144,6 +138,17 @@ def macd(x, **kwargs):
    
 
 def bollinger(x, **kwargs):
+    
+    # Generates bollinger bands
+        
+    # x: Dataframe
+    # inputcol (str): Column from x that is being used to calculate the MACD
+    #                 Defaults to "Adj Close"
+    # period (int): Lookback period (in days) for calculating the average
+    #                 Defaults to 20
+
+    # Example: 
+    # SP500MACD = macd(SP500)
 
     boll = pd.DataFrame()
 
